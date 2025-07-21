@@ -1,0 +1,9 @@
+[gd_scene format=3 uid="uid://doyuxjx6wd46k"]
+
+[node name="InteractableItem" type="RigidBody3D"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+
+[node name="Outline" type="MeshInstance3D" parent="."]
