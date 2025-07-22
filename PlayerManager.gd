@@ -25,8 +25,15 @@ var house_positions: Array = [
 ]
 
 func _ready():
-	NetworkManager.player_connected.connect(_on_player_connected)
-	NetworkManager.player_disconnected.connect(_on_player_disconnected)
+	await get_tree().process_frame
+	
+	# Check if NetworkManager exists and has the required signals
+	if NetworkManager and NetworkManager.has_signal("player_connected"):
+		NetworkManager.player_connected.connect(_on_player_connected)
+		NetworkManager.player_disconnected.connect(_on_player_disconnected)
+		print("PlayerManager: Connected to NetworkManager signals")
+	else:
+		print("ERROR: NetworkManager not found or missing signals! Make sure it's set up as an autoload.")
 	
 	# Setup spawn points (adjust positions based on your map)
 	spawn_points = [
@@ -172,7 +179,7 @@ func get_player_at_position(position: Vector3, max_distance: float = 2.0) -> int
 func get_player_by_id(player_id: int) -> Node:
 	return players.get(player_id, null)
 
-func _on_player_connected(player_id: int, player_name: String):
+func _on_player_connected(player_id: int, _player_name: String):
 	# Spawn player when they connect
 	call_deferred("spawn_player", player_id)
 

@@ -73,7 +73,9 @@ func assign_roles():
 	
 	# Calculate role distribution based on player count
 	var player_count = player_ids.size()
-	var mafia_count = max(1, player_count / 4)
+	var mafia_count = max(1, player_count / 4)  # This will be integer division automatically
+	
+	# Rest of the function remains the same...
 	
 	# Add mafia roles
 	for i in range(mafia_count):
@@ -228,8 +230,9 @@ func process_night_actions():
 		rpc_id(investigator, "receive_investigation_result", investigations[investigator])
 
 @rpc("authority", "call_local")
-func receive_investigation_result(result: Dictionary):
+func receive_investigation_result(_result: Dictionary):
 	# Handle investigation result on client
+	# Add underscore prefix to indicate intentionally unused parameter
 	pass
 
 func eliminate_player(player_id: int):

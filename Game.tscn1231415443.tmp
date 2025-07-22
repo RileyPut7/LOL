@@ -1,0 +1,57 @@
+[gd_scene load_steps=9 format=3 uid="uid://crdys613qrsj5"]
+
+[ext_resource type="PackedScene" uid="uid://d3uwnumuwiahl" path="res://Player.tscn" id="1_wbfu4"]
+[ext_resource type="PackedScene" uid="uid://c5abph78kkqft" path="res://GameUI.tscn" id="2_xkndl"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_6ubv3"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wbfu4"]
+albedo_color = Color(0.380313, 0.79718, 0.45576, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_xkndl"]
+size = Vector3(1, 0.0253906, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wbfu4"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_u44n3"]
+
+[sub_resource type="Environment" id="Environment_wbfu4"]
+ambient_light_source = 3
+ambient_light_color = Color(0.542596, 0.80537, 0.923578, 1)
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_wbfu4")]
+
+[node name="World" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="World"]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/Ground"]
+transform = Transform3D(50, 0, 0, 0, -2.18557e-06, 50, 0, -50, -2.18557e-06, 0, 0, 0)
+mesh = SubResource("QuadMesh_6ubv3")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("StandardMaterial3D_wbfu4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/Ground"]
+transform = Transform3D(50, 0, 0, 0, 50, 0, 0, 0, 50, 0, -0.634766, 0)
+shape = SubResource("BoxShape3D_xkndl")
+
+[node name="House1" type="StaticBody3D" parent="World"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.3528, 0.499095, 0)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="World/House1"]
+mesh = SubResource("BoxMesh_wbfu4")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="World/House1"]
+shape = SubResource("BoxShape3D_u44n3")
+
+[node name="Lighting" type="Node3D" parent="World"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="World/Lighting"]
+transform = Transform3D(1, 0, 0, 0, -0.000907584, 1, 0, -1, -0.000907584, 0, 14.8954, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="World/Lighting"]
+environment = SubResource("Environment_wbfu4")
+
+[node name="GameUI" parent="." instance=ExtResource("2_xkndl")]

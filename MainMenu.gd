@@ -1,188 +1,176 @@
-# MainMenu.gd
+# Debug MainMenu.gd - Fixed paths
 extends Control
 
-@onready var main_panel: Panel = $MainPanel
-@onready var server_browser: Panel = $ServerBrowser
-@onready var create_server: Panel = $CreateServer
-@onready var player_name_input: LineEdit = $MainPanel/VBox/PlayerNameInput
-@onready var host_button: Button = $MainPanel/VBox/HostButton
-@onready var join_button: Button = $MainPanel/VBox/JoinButton
-@onready var quit_button: Button = $MainPanel/VBox/QuitButton
+# Fixed paths to match your actual scene structure
+@onready var main_panel: Panel = get_node_or_null("MainPanel")
+@onready var server_browser: Panel = get_node_or_null("ServerBrowser")
+@onready var create_server: Panel = get_node_or_null("CreateServer")
+@onready var player_name_input: LineEdit = get_node_or_null("MainPanel/VBoxContainer/PlayerNameInput")
+@onready var host_button: Button = get_node_or_null("MainPanel/VBoxContainer/HostButton")
+@onready var join_button: Button = get_node_or_null("MainPanel/VBoxContainer/JoinButton")
+@onready var quit_button: Button = get_node_or_null("MainPanel/VBoxContainer/QuitButton")
 
 # Server Browser
-@onready var server_list: ItemList = $ServerBrowser/VBox/ServerList
-@onready var refresh_button: Button = $ServerBrowser/VBox/HBox/RefreshButton
-@onready var browser_join_button: Button = $ServerBrowser/VBox/HBox/JoinButton
-@onready var browser_back_button: Button = $ServerBrowser/VBox/HBox/BackButton
+@onready var server_list: ItemList = get_node_or_null("ServerBrowser/VBoxContainer/ItemList")
+@onready var refresh_button: Button = get_node_or_null("ServerBrowser/VBoxContainer/HBoxContainer/RefreshButton")
+@onready var browser_join_button: Button = get_node_or_null("ServerBrowser/VBoxContainer/HBoxContainer/JoinButton")
+@onready var browser_back_button: Button = get_node_or_null("ServerBrowser/VBoxContainer/HBoxContainer/BackButton")
 
 # Create Server
-@onready var server_name_input: LineEdit = $CreateServer/VBox/ServerNameInput
-@onready var port_input: SpinBox = $CreateServer/VBox/PortInput
-@onready var create_button: Button = $CreateServer/VBox/HBox/CreateButton
-@onready var create_back_button: Button = $CreateServer/VBox/HBox/BackButton
+@onready var server_name_input: LineEdit = get_node_or_null("CreateServer/VBoxContainer/ServerNameInput")
+@onready var port_input: SpinBox = get_node_or_null("CreateServer/VBoxContainer/PortInput")
+@onready var create_button: Button = get_node_or_null("CreateServer/VBoxContainer/HBoxContainer/CreateButton")
+@onready var create_back_button: Button = get_node_or_null("CreateServer/VBoxContainer/HBoxContainer/BackButton")
 
 func _ready():
 	setup_ui()
 	connect_signals()
 	
 	# Set default player name
-	player_name_input.text = "Player" + str(randi() % 1000)
+	if player_name_input:
+		player_name_input.text = "Player" + str(randi() % 1000)
+		print("Set default player name")
+	else:
+		print("ERROR: PlayerNameInput not found!")
 
 func setup_ui():
 	# Show only main panel initially
-	main_panel.visible = true
-	server_browser.visible = false
-	create_server.visible = false
+	if main_panel:
+		main_panel.visible = true
+		print("MainPanel made visible")
+	if server_browser:
+		server_browser.visible = false
+		print("ServerBrowser hidden")
+	if create_server:
+		create_server.visible = false
+		print("CreateServer hidden")
 	
 	# Setup server browser
-	server_list.select_mode = ItemList.SELECT_SINGLE
+	if server_list:
+		server_list.select_mode = ItemList.SELECT_SINGLE
+		print("Server list configured")
 	
 	# Setup port input
-	port_input.min_value = 1024
-	port_input.max_value = 65535
-	port_input.value = NetworkManager.DEFAULT_PORT
+	if port_input:
+		port_input.min_value = 1024
+		port_input.max_value = 65535
+		port_input.value = 7000  # Default port since NetworkManager might not be ready yet
+		print("Port input configured")
 
 func connect_signals():
+	print("=== CONNECTING SIGNALS ===")
+	
 	# Main menu buttons
-	host_button.pressed.connect(_on_host_pressed)
-	join_button.pressed.connect(_on_join_pressed)
-	quit_button.pressed.connect(_on_quit_pressed)
+	if host_button:
+		host_button.pressed.connect(_on_host_pressed)
+		print("Connected host button")
+	else:
+		print("ERROR: Host button not found!")
+		
+	if join_button:
+		join_button.pressed.connect(_on_join_pressed)
+		print("Connected join button")
+	else:
+		print("ERROR: Join button not found!")
+		
+	if quit_button:
+		quit_button.pressed.connect(_on_quit_pressed)
+		print("Connected quit button")
+	else:
+		print("ERROR: Quit button not found!")
 	
-	# Server browser
-	refresh_button.pressed.connect(_on_refresh_pressed)
-	browser_join_button.pressed.connect(_on_browser_join_pressed)
-	browser_back_button.pressed.connect(_on_browser_back_pressed)
-	server_list.item_selected.connect(_on_server_selected)
+	# Server browser buttons
+	if refresh_button:
+		refresh_button.pressed.connect(_on_refresh_pressed)
+		print("Connected refresh button")
 	
-	# Create server
-	create_button.pressed.connect(_on_create_pressed)
-	create_back_button.pressed.connect(_on_create_back_pressed)
+	if browser_join_button:
+		browser_join_button.pressed.connect(_on_browser_join_pressed)
+		print("Connected browser join button")
 	
-	# Network signals
-	NetworkManager.server_created.connect(_on_server_created)
-	NetworkManager.server_joined.connect(_on_server_joined)
-	NetworkManager.server_disconnected.connect(_on_server_disconnected)
-	NetworkManager.server_list_updated.connect(_on_server_list_updated)
+	if browser_back_button:
+		browser_back_button.pressed.connect(_on_browser_back_pressed)
+		print("Connected browser back button")
+	
+	if server_list:
+		server_list.item_selected.connect(_on_server_selected)
+		print("Connected server list")
+	
+	# Create server buttons
+	if create_button:
+		create_button.pressed.connect(_on_create_pressed)
+		print("Connected create button")
+	
+	if create_back_button:
+		create_back_button.pressed.connect(_on_create_back_pressed)
+		print("Connected create back button")
 
 func _on_host_pressed():
+	print("HOST BUTTON CLICKED!")
+	if not player_name_input:
+		print("ERROR: Player name input not found")
+		return
+		
 	if player_name_input.text.strip_edges().length() < 3:
-		show_error("Player name must be at least 3 characters")
+		print("ERROR: Player name must be at least 3 characters")
 		return
 		
 	show_create_server_panel()
 
 func _on_join_pressed():
+	print("JOIN BUTTON CLICKED!")
+	if not player_name_input:
+		print("ERROR: Player name input not found")
+		return
+		
 	if player_name_input.text.strip_edges().length() < 3:
-		show_error("Player name must be at least 3 characters")
+		print("ERROR: Player name must be at least 3 characters")
 		return
 		
 	show_server_browser()
 
 func _on_quit_pressed():
+	print("QUIT BUTTON CLICKED!")
 	get_tree().quit()
 
 func show_create_server_panel():
-	main_panel.visible = false
-	create_server.visible = true
-	server_name_input.text = player_name_input.text + "'s Server"
+	print("Switching to create server panel")
+	if main_panel:
+		main_panel.visible = false
+	if create_server:
+		create_server.visible = true
+	if server_name_input and player_name_input:
+		server_name_input.text = player_name_input.text + "'s Server"
 
 func show_server_browser():
-	main_panel.visible = false
-	server_browser.visible = true
-	_on_refresh_pressed()
+	print("Switching to server browser")
+	if main_panel:
+		main_panel.visible = false
+	if server_browser:
+		server_browser.visible = true
 
 func _on_refresh_pressed():
-	refresh_button.disabled = true
-	refresh_button.text = "Refreshing..."
-	server_list.clear()
-	
-	NetworkManager.start_server_browser()
-	
-	# Re-enable after delay
-	await get_tree().create_timer(2.0).timeout
-	refresh_button.disabled = false
-	refresh_button.text = "Refresh"
-
-func _on_server_selected(index: int):
-	browser_join_button.disabled = false
+	print("Refresh button clicked!")
 
 func _on_browser_join_pressed():
-	var selected = server_list.get_selected_items()
-	if selected.is_empty():
-		return
-		
-	var index = selected[0]
-	var servers = NetworkManager.get_discovered_servers()
-	if index >= servers.size():
-		return
-		
-	var server = servers[index]
-	NetworkManager.set_player_name(player_name_input.text.strip_edges())
-	
-	if NetworkManager.join_server("127.0.0.1", server["port"]):  # Use localhost for discovery
-		browser_join_button.disabled = true
-		browser_join_button.text = "Joining..."
+	print("Browser join button clicked!")
 
 func _on_browser_back_pressed():
-	NetworkManager.stop_server_browser()
-	server_browser.visible = false
-	main_panel.visible = true
+	print("Browser back button clicked!")
+	if server_browser:
+		server_browser.visible = false
+	if main_panel:
+		main_panel.visible = true
+
+func _on_server_selected(index: int):
+	print("Server selected: ", index)
 
 func _on_create_pressed():
-	var server_name = server_name_input.text.strip_edges()
-	var port = int(port_input.value)
-	
-	if server_name.length() < 3:
-		show_error("Server name must be at least 3 characters")
-		return
-		
-	NetworkManager.set_player_name(player_name_input.text.strip_edges())
-	
-	if NetworkManager.create_server(server_name, port):
-		create_button.disabled = true
-		create_button.text = "Creating..."
+	print("Create server button clicked!")
 
 func _on_create_back_pressed():
-	create_server.visible = false
-	main_panel.visible = true
-
-func _on_server_created(port: int):
-	print("Server created successfully on port ", port)
-	# Switch to game lobby
-	get_tree().change_scene_to_file("res://Lobby.tscn")
-
-func _on_server_joined(address: String):
-	print("Joined server: ", address)
-	# Switch to game lobby
-	get_tree().change_scene_to_file("res://Lobby.tscn")
-
-func _on_server_disconnected():
-	# Return to main menu
-	main_panel.visible = true
-	server_browser.visible = false
-	create_server.visible = false
-	
-	# Reset button states
-	browser_join_button.disabled = false
-	browser_join_button.text = "Join"
-	create_button.disabled = false
-	create_button.text = "Create"
-	
-	show_error("Disconnected from server")
-
-func _on_server_list_updated(servers: Array):
-	server_list.clear()
-	
-	for server in servers:
-		var text = "%s (%d/%d) - %s" % [
-			server["name"],
-			server["current_players"],
-			server["max_players"],
-			server["host"]
-		]
-		server_list.add_item(text)
-
-func show_error(message: String):
-	# Simple error display - you might want to create a proper dialog
-	print("Error: ", message)
-	# You could add an AcceptDialog here for better UX
+	print("Create back button clicked!")
+	if create_server:
+		create_server.visible = false
+	if main_panel:
+		main_panel.visible = true

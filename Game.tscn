@@ -1,11 +1,12 @@
-[gd_scene load_steps=8 format=3 uid="uid://crdys613qrsj5"]
+[gd_scene load_steps=9 format=3 uid="uid://crdys613qrsj5"]
 
 [ext_resource type="PackedScene" uid="uid://d3uwnumuwiahl" path="res://Player.tscn" id="1_wbfu4"]
+[ext_resource type="PackedScene" uid="uid://c5abph78kkqft" path="res://GameUI.tscn" id="2_xkndl"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_6ubv3"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wbfu4"]
-albedo_color = Color(0.380313, 0.79718, 0.45576, 1)
+albedo_color = Color(0.222463, 0.491299, 0.271383, 1)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_xkndl"]
 size = Vector3(1, 0.0253906, 1)
@@ -52,3 +53,5 @@ transform = Transform3D(1, 0, 0, 0, -0.000907584, 1, 0, -1, -0.000907584, 0, 14.
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="World/Lighting"]
 environment = SubResource("Environment_wbfu4")
+
+[node name="GameUI" parent="." instance=ExtResource("2_xkndl")]

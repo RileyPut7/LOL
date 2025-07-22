@@ -13,78 +13,128 @@ script = ExtResource("1_i26rj")
 
 [node name="MainPanel" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 433.0
+offset_left = 424.0
 offset_top = 60.0
-offset_right = 679.0
-offset_bottom = 139.0
+offset_right = 687.0
+offset_bottom = 204.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainPanel"]
-layout_mode = 0
-offset_right = 246.0
-offset_bottom = 67.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -123.0
+offset_top = -68.0
+offset_right = 123.0
+offset_bottom = 68.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="PlayerNameInput" type="LineEdit" parent="MainPanel/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 4
 size_flags_vertical = 4
+placeholder_text = "TYPE NAME"
+alignment = 1
 
 [node name="HostButton" type="Button" parent="MainPanel/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+text = "HOST"
 
 [node name="JoinButton" type="Button" parent="MainPanel/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+text = "JOIN"
 
 [node name="QuitButton" type="Button" parent="MainPanel/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
+text = "QUIT"
 
 [node name="ServerBrowser" type="Panel" parent="."]
 layout_mode = 0
-offset_left = 433.0
-offset_top = 149.0
-offset_right = 677.0
-offset_bottom = 245.0
+offset_left = 424.0
+offset_top = 207.0
+offset_right = 686.0
+offset_bottom = 308.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="ServerBrowser"]
-layout_mode = 0
-offset_right = 245.0
-offset_bottom = 95.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -122.5
+offset_top = -47.5
+offset_right = 122.5
+offset_bottom = 47.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ItemList" type="ItemList" parent="ServerBrowser/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 3
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ServerBrowser/VBoxContainer"]
 layout_mode = 2
 
 [node name="RefreshButton" type="Button" parent="ServerBrowser/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "REFRESH
+"
 
 [node name="JoinButton" type="Button" parent="ServerBrowser/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "JOIN"
 
 [node name="BackButton" type="Button" parent="ServerBrowser/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "BACK"
 
 [node name="CreateServer" type="Panel" parent="."]
 layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+offset_left = 423.0
+offset_top = 313.0
+offset_right = 686.0
+offset_bottom = 445.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CreateServer"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -125.5
+offset_top = -60.5
+offset_right = 125.5
+offset_bottom = 60.5
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="ServerNameInput" type="LineEdit" parent="CreateServer/VBoxContainer"]
 layout_mode = 2
+placeholder_text = "TYPE SERVER NAME"
 
 [node name="PortInput" type="SpinBox" parent="CreateServer/VBoxContainer"]
 layout_mode = 2
+tooltip_text = "PORT NUMBER"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CreateServer/VBoxContainer"]
 layout_mode = 2
 
 [node name="CreateButton" type="Button" parent="CreateServer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "CREATE"
 
 [node name="BackButton" type="Button" parent="CreateServer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
+size_flags_horizontal = 3
+text = "BACK"

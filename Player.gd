@@ -10,11 +10,11 @@ extends CharacterBody3D
 const WALK_SPEED = 4.5
 const RUN_SPEED = 6.0
 const CROUCH_SPEED = 2.0
-const JUMP_VELOCITY = 6.5
-const AIR_ACCELERATION = 2.0
+const JUMP_VELOCITY = 5.5
+const AIR_ACCELERATION = 3.0
 const GROUND_ACCELERATION = 10.0
-const GROUND_FRICTION = 6.0
-const AIR_FRICTION = 0.1
+const GROUND_FRICTION = 14
+const AIR_FRICTION = 0.7
 const MAX_SLOPE_ANGLE = 45.0
 
 # Mouse settings
@@ -335,8 +335,8 @@ func perform_night_action(action_type: String, target_id: int):
 
 func get_nearby_players(radius: float = 5.0) -> Array:
 	var nearby = []
-	for player_id in PlayerManager.players:
-		var player = PlayerManager.players[player_id]
+	for p_id in PlayerManager.players:  # Renamed from player_id
+		var player = PlayerManager.players[p_id]
 		if player != self and is_instance_valid(player):
 			if global_position.distance_to(player.global_position) <= radius:
 				nearby.append(player)
