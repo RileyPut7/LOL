@@ -17,29 +17,15 @@ func _ready():
 	print("ChatInput found: ", chat_input != null)
 	print("SendButton found: ", send_button != null)
 	
-	# Print the actual scene structure
-	print("=== LOBBY SCENE STRUCTURE ===")
-	print_node_tree(self, 0)
-	
 	setup_ui()
 	connect_signals()
 	update_player_list()
-
-func print_node_tree(node: Node, depth: int):
-	var indent = ""
-	for i in range(depth):
-		indent += "  "
-	
-	print(indent + node.name + " (" + node.get_class() + ")")
-	
-	for child in node.get_children():
-		print_node_tree(child, depth + 1)
 
 func setup_ui():
 	# Only show start button for host
 	if start_button:
 		start_button.visible = NetworkManager.is_server_host() if NetworkManager else false
-		start_button.disabled = true
+		start_button.disabled = true  # Disabled until enough players
 		print("Start button configured for host: ", start_button.visible)
 	
 	if chat_log:
@@ -92,14 +78,18 @@ func connect_signals():
 
 func _on_start_pressed():
 	print("Start button pressed!")
-	if NetworkManager and NetworkManager.get_player_count() >= 3:
+	if NetworkManager and NetworkManager.get_player_count() >= 1:  # Changed from 3 to 1 for testing
+		print("Starting game...")
 		start_game.rpc()
 	else:
-		print("Need at least 3 players to start")
+		print("Need at least 1 player to start (testing mode)")
 
 @rpc("authority", "call_local")
 func start_game():
 	print("Starting game...")
+	# Start the game in GameManager
+	if GameManager:
+		GameManager.start_game()
 	get_tree().change_scene_to_file("res://Game.tscn")
 
 func _on_leave_pressed():
@@ -142,7 +132,7 @@ func _on_player_connected(id: int, player_name: String):
 	
 	# Update start button availability
 	if NetworkManager and start_button and NetworkManager.is_server_host():
-		start_button.disabled = NetworkManager.get_player_count() < 3
+		start_button.disabled = NetworkManager.get_player_count() < 1  # Changed from 3 to 1 for testing
 
 func _on_player_disconnected(id: int):
 	print("Player disconnected: ", id)
@@ -152,7 +142,7 @@ func _on_player_disconnected(id: int):
 	
 	# Update start button availability
 	if NetworkManager and start_button and NetworkManager.is_server_host():
-		start_button.disabled = NetworkManager.get_player_count() < 3
+		start_button.disabled = NetworkManager.get_player_count() < 1  # Changed from 3 to 1 for testing
 
 func _on_server_disconnected():
 	print("Server disconnected!")
