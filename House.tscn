@@ -1,0 +1,47 @@
+[gd_scene load_steps=2 format=3 uid="uid://q07jh6sfmdpo"]
+
+[ext_resource type="Script" uid="uid://dhwq748ykey86" path="res://House.gd" id="1_xm50o"]
+
+[node name="House" type="StaticBody3D"]
+script = ExtResource("1_xm50o")
+
+[node name="HouseMesh" type="MeshInstance3D" parent="."]
+
+[node name="HouseCollision" type="CollisionShape3D" parent="HouseMesh"]
+
+[node name="FrontDoor" type="Area3D" parent="."]
+
+[node name="FrontDoorCollision" type="CollisionShape3D" parent="FrontDoor"]
+
+[node name="BackDoor" type="Area3D" parent="."]
+
+[node name="BackDoorCollision" type="CollisionShape3D" parent="BackDoor"]
+
+[node name="Window" type="MeshInstance3D" parent="."]
+
+[node name="SideWindow" type="MeshInstance3D" parent="."]
+
+[node name="Interior" type="Node3D" parent="."]
+
+[node name="PlayerSpawnPoint" type="Marker3D" parent="Interior"]
+
+[node name="InteriorLight" type="OmniLight3D" parent="Interior"]
+
+[node name="WindowView" type="Marker3D" parent="Interior"]
+
+[node name="Furniture" type="Node3D" parent="Interior"]
+
+[node name="Bed" type="MeshInstance3D" parent="Interior/Furniture"]
+
+[node name="Desk" type="MeshInstance3D" parent="Interior/Furniture"]
+skeleton = NodePath("../Bed")
+
+[node name="Logbook" type="MeshInstance3D" parent="Interior/Furniture"]
+
+[node name="Exterior" type="Node3D" parent="."]
+
+[node name="FrontPorch" type="MeshInstance3D" parent="Exterior"]
+
+[node name="BackPorch" type="MeshInstance3D" parent="Exterior"]
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]

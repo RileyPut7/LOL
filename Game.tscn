@@ -1,7 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://crdys613qrsj5"]
+[gd_scene load_steps=10 format=3 uid="uid://crdys613qrsj5"]
 
 [ext_resource type="PackedScene" uid="uid://d3uwnumuwiahl" path="res://Player.tscn" id="1_wbfu4"]
 [ext_resource type="PackedScene" uid="uid://c5abph78kkqft" path="res://GameUI.tscn" id="2_xkndl"]
+[ext_resource type="PackedScene" uid="uid://d3yxv03fbjd03" path="res://scenes/outdoor_daytime_scene.tscn" id="3_u44n3"]
+[ext_resource type="Script" uid="uid://bvq3jh2uemahb" path="res://HouseSpawner.gd" id="4_sb48q"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_6ubv3"]
 
@@ -14,10 +16,6 @@ size = Vector3(1, 0.0253906, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_wbfu4"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_u44n3"]
-
-[sub_resource type="Environment" id="Environment_wbfu4"]
-ambient_light_source = 3
-ambient_light_color = Color(0.542596, 0.80537, 0.923578, 1)
 
 [node name="Node3D" type="Node3D"]
 
@@ -51,7 +49,13 @@ shape = SubResource("BoxShape3D_u44n3")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="World/Lighting"]
 transform = Transform3D(1, 0, 0, 0, -0.000907584, 1, 0, -1, -0.000907584, 0, 14.8954, 0)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="World/Lighting"]
-environment = SubResource("Environment_wbfu4")
-
 [node name="GameUI" parent="." instance=ExtResource("2_xkndl")]
+
+[node name="village" parent="." instance=ExtResource("3_u44n3")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.079483, -19.7975)
+
+[node name="HouseSpawner" type="Node3D" parent="."]
+script = ExtResource("4_sb48q")
+
+[editable path="village"]
+[editable path="village/MedievalTown"]
