@@ -11,7 +11,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_gv8if")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBox" type="VBoxContainer" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -25,27 +25,41 @@ offset_bottom = 259.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PlayerList" type="ItemList" parent="VBoxContainer"]
+[node name="Label" type="Label" parent="VBox"]
+layout_mode = 2
+text = "Players"
+horizontal_alignment = 1
+
+[node name="PlayerList" type="ItemList" parent="VBox"]
+custom_minimum_size = Vector2(200, 300)
 layout_mode = 2
 
-[node name="StartButton" type="Button" parent="VBoxContainer"]
+[node name="StartButton" type="Button" parent="VBox"]
 layout_mode = 2
 text = "START"
 
-[node name="LeaveButton" type="Button" parent="VBoxContainer"]
+[node name="LeaveButton" type="Button" parent="VBox"]
 layout_mode = 2
 text = "LEAVE"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+[node name="HBox" type="HBoxContainer" parent="VBox"]
 layout_mode = 2
 
-[node name="ChatLog" type="RichTextLabel" parent="VBoxContainer/HBoxContainer"]
+[node name="ChatLog" type="RichTextLabel" parent="VBox/HBox"]
+custom_minimum_size = Vector2(200, 150)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/table_border = Color(0, 0, 0, 1)
+theme_override_colors/table_even_row_bg = Color(0.892417, 0.457207, 0.816548, 1)
+theme_override_constants/outline_size = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBox/HBox"]
 layout_mode = 2
 
-[node name="ChatInput" type="LineEdit" parent="VBoxContainer/HBoxContainer"]
+[node name="ChatInput" type="LineEdit" parent="VBox/HBox/VBoxContainer"]
 layout_mode = 2
 placeholder_text = "CHAT"
 
-[node name="SendButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+[node name="SendButton" type="Button" parent="VBox/HBox/VBoxContainer"]
 layout_mode = 2
 text = "SEND"

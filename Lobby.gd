@@ -1,46 +1,111 @@
-# Lobby.gd
+# Lobby.gd - Fixed version
 extends Control
 
-@onready var player_list: ItemList = $VBox/PlayerList
-@onready var start_button: Button = $VBox/StartButton
-@onready var leave_button: Button = $VBox/LeaveButton
-@onready var chat_log: RichTextLabel = $VBox/HBox/ChatLog
-@onready var chat_input: LineEdit = $VBox/HBox/ChatInput
-@onready var send_button: Button = $VBox/HBox/SendButton
+@onready var player_list: ItemList = get_node_or_null("VBox/PlayerList")
+@onready var start_button: Button = get_node_or_null("VBox/StartButton")
+@onready var leave_button: Button = get_node_or_null("VBox/LeaveButton")
+@onready var chat_log: RichTextLabel = get_node_or_null("VBox/HBox/ChatLog")
+@onready var chat_input: LineEdit = get_node_or_null("VBox/HBox/VBoxContainer/ChatInput")
+@onready var send_button: Button = get_node_or_null("VBox/HBox/VBoxContainer/SendButton")
 
 func _ready():
+	print("=== LOBBY DEBUG ===")
+	print("PlayerList found: ", player_list != null)
+	print("StartButton found: ", start_button != null)
+	print("LeaveButton found: ", leave_button != null)
+	print("ChatLog found: ", chat_log != null)
+	print("ChatInput found: ", chat_input != null)
+	print("SendButton found: ", send_button != null)
+	
+	# Print the actual scene structure
+	print("=== LOBBY SCENE STRUCTURE ===")
+	print_node_tree(self, 0)
+	
 	setup_ui()
 	connect_signals()
 	update_player_list()
 
+func print_node_tree(node: Node, depth: int):
+	var indent = ""
+	for i in range(depth):
+		indent += "  "
+	
+	print(indent + node.name + " (" + node.get_class() + ")")
+	
+	for child in node.get_children():
+		print_node_tree(child, depth + 1)
+
 func setup_ui():
 	# Only show start button for host
-	start_button.visible = NetworkManager.is_server_host()
-	start_button.disabled = true
+	if start_button:
+		start_button.visible = NetworkManager.is_server_host() if NetworkManager else false
+		start_button.disabled = true
+		print("Start button configured for host: ", start_button.visible)
 	
-	chat_log.bbcode_enabled = true
-	chat_input.placeholder_text = "Type message..."
+	if chat_log:
+		chat_log.bbcode_enabled = true
+		# Make chat log bigger
+		chat_log.custom_minimum_size = Vector2(400, 200)
+		print("Chat log configured")
+	
+	if chat_input:
+		chat_input.placeholder_text = "Type message..."
+		print("Chat input configured")
 
 func connect_signals():
-	start_button.pressed.connect(_on_start_pressed)
-	leave_button.pressed.connect(_on_leave_pressed)
-	send_button.pressed.connect(_on_send_pressed)
-	chat_input.text_submitted.connect(_on_chat_submitted)
+	print("=== CONNECTING LOBBY SIGNALS ===")
 	
-	NetworkManager.player_connected.connect(_on_player_connected)
-	NetworkManager.player_disconnected.connect(_on_player_disconnected)
-	NetworkManager.server_disconnected.connect(_on_server_disconnected)
+	if start_button:
+		start_button.pressed.connect(_on_start_pressed)
+		print("Connected start button")
+	
+	if leave_button:
+		leave_button.pressed.connect(_on_leave_pressed)
+		print("Connected leave button")
+	
+	if send_button:
+		send_button.pressed.connect(_on_send_pressed)
+		print("Connected send button")
+	
+	if chat_input:
+		chat_input.text_submitted.connect(_on_chat_submitted)
+		print("Connected chat input")
+	
+	# Network signals
+	if NetworkManager:
+		if NetworkManager.has_signal("player_connected"):
+			NetworkManager.player_connected.connect(_on_player_connected)
+			print("Connected to player_connected signal")
+		if NetworkManager.has_signal("player_disconnected"):
+			NetworkManager.player_disconnected.connect(_on_player_disconnected)
+			print("Connected to player_disconnected signal")
+		if NetworkManager.has_signal("server_disconnected"):
+			NetworkManager.server_disconnected.connect(_on_server_disconnected)
+			print("Connected to server_disconnected signal")
+		
+		print("Connected players: ", NetworkManager.connected_players.size())
+		for player_id in NetworkManager.connected_players:
+			var player_info = NetworkManager.connected_players[player_id]
+			print("  Player ", player_id, ": ", player_info["name"])
+	else:
+		print("ERROR: NetworkManager not found!")
 
 func _on_start_pressed():
-	if NetworkManager.get_player_count() >= 3:
+	print("Start button pressed!")
+	if NetworkManager and NetworkManager.get_player_count() >= 3:
 		start_game.rpc()
+	else:
+		print("Need at least 3 players to start")
 
 @rpc("authority", "call_local")
 func start_game():
+	print("Starting game...")
 	get_tree().change_scene_to_file("res://Game.tscn")
 
 func _on_leave_pressed():
-	NetworkManager.disconnect_from_server()
+	print("Leave button pressed!")
+	if NetworkManager:
+		NetworkManager.disconnect_from_server()
 	get_tree().change_scene_to_file("res://MainMenu.tscn")
 
 func _on_send_pressed():
@@ -50,42 +115,63 @@ func _on_chat_submitted(text: String):
 	send_chat_message()
 
 func send_chat_message():
+	if not chat_input:
+		return
+		
 	var message = chat_input.text.strip_edges()
 	if message.length() == 0:
 		return
 		
-	var player_name = NetworkManager.player_name
+	var player_name = NetworkManager.player_name if NetworkManager else "Unknown"
 	receive_chat_message.rpc(player_name, message)
 	chat_input.clear()
 
 @rpc("any_peer", "call_local")
 func receive_chat_message(player_name: String, message: String):
-	var time_str = Time.get_time_string_from_system()
-	chat_log.append_text("[%s] %s: %s\n" % [time_str, player_name, message])
+	if not chat_log:
+		return
+		
+	# Remove timestamp for cleaner look
+	chat_log.append_text("%s: %s\n" % [player_name, message])
 	chat_log.scroll_to_line(chat_log.get_line_count())
 
 func _on_player_connected(id: int, player_name: String):
+	print("Player connected: ", id, " - ", player_name)
 	update_player_list()
 	receive_chat_message("System", player_name + " joined the lobby")
 	
 	# Update start button availability
-	if NetworkManager.is_server_host():
+	if NetworkManager and start_button and NetworkManager.is_server_host():
 		start_button.disabled = NetworkManager.get_player_count() < 3
 
 func _on_player_disconnected(id: int):
-	var player_name = NetworkManager.get_player_name_by_id(id)
+	print("Player disconnected: ", id)
+	var player_name = NetworkManager.get_player_name_by_id(id) if NetworkManager else "Unknown"
 	update_player_list()
 	receive_chat_message("System", player_name + " left the lobby")
 	
 	# Update start button availability
-	if NetworkManager.is_server_host():
+	if NetworkManager and start_button and NetworkManager.is_server_host():
 		start_button.disabled = NetworkManager.get_player_count() < 3
 
 func _on_server_disconnected():
+	print("Server disconnected!")
 	get_tree().change_scene_to_file("res://MainMenu.tscn")
 
 func update_player_list():
+	print("Updating player list...")
+	
+	if not player_list:
+		print("ERROR: Player list not found!")
+		return
+	
+	if not NetworkManager:
+		print("ERROR: NetworkManager not found!")
+		return
+	
 	player_list.clear()
+	
+	print("Connected players count: ", NetworkManager.connected_players.size())
 	
 	for player_id in NetworkManager.connected_players:
 		var player_info = NetworkManager.connected_players[player_id]
@@ -96,3 +182,6 @@ func update_player_list():
 			display_name += " (Host)"
 			
 		player_list.add_item(display_name)
+		print("Added player to list: ", display_name)
+	
+	print("Player list updated with ", player_list.get_item_count(), " items")

@@ -90,7 +90,7 @@ offset_bottom = 71.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VotePanel"]
+[node name="VBox" type="VBoxContainer" parent="VotePanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -104,10 +104,10 @@ offset_bottom = 53.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VoteList" type="ItemList" parent="VotePanel/VBoxContainer"]
+[node name="VoteList" type="ItemList" parent="VotePanel/VBox"]
 layout_mode = 2
 
-[node name="VoteButton" type="Button" parent="VotePanel/VBoxContainer"]
+[node name="VoteButton" type="Button" parent="VotePanel/VBox"]
 layout_mode = 2
 text = "VOTE"
 
@@ -120,7 +120,7 @@ offset_top = -168.0
 offset_right = 187.0
 grow_vertical = 0
 
-[node name="VBoxContainer" type="VBoxContainer" parent="NightActionPanel"]
+[node name="VBox" type="VBoxContainer" parent="NightActionPanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -134,10 +134,10 @@ offset_bottom = 67.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ActionList" type="ItemList" parent="NightActionPanel/VBoxContainer"]
+[node name="ActionList" type="ItemList" parent="NightActionPanel/VBox"]
 layout_mode = 2
 
-[node name="ActionButton" type="Button" parent="NightActionPanel/VBoxContainer"]
+[node name="ActionButton" type="Button" parent="NightActionPanel/VBox"]
 layout_mode = 2
 text = "USE"
 

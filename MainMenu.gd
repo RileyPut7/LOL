@@ -101,9 +101,14 @@ func connect_signals():
 		create_button.pressed.connect(_on_create_pressed)
 		print("Connected create button")
 	
-	if create_back_button:
-		create_back_button.pressed.connect(_on_create_back_pressed)
-		print("Connected create back button")
+	# Network signals - check if NetworkManager exists
+	if NetworkManager:
+		NetworkManager.server_created.connect(_on_server_created)
+		NetworkManager.server_disconnected.connect(_on_server_disconnected)
+		NetworkManager.server_list_updated.connect(_on_server_list_updated)
+		print("Connected to NetworkManager signals")
+	else:
+		print("ERROR: NetworkManager not found for signal connections!")
 
 func _on_host_pressed():
 	print("HOST BUTTON CLICKED!")
@@ -167,6 +172,34 @@ func _on_server_selected(index: int):
 
 func _on_create_pressed():
 	print("Create server button clicked!")
+	
+	if not server_name_input or not port_input or not create_button:
+		print("ERROR: Create server UI elements not found")
+		return
+		
+	var server_name = server_name_input.text.strip_edges()
+	var port = int(port_input.value)
+	
+	if server_name.length() < 3:
+		print("ERROR: Server name must be at least 3 characters")
+		return
+		
+	if not NetworkManager:
+		print("ERROR: NetworkManager not found")
+		return
+		
+	if player_name_input:
+		NetworkManager.set_player_name(player_name_input.text.strip_edges())
+		print("Set player name: ", player_name_input.text.strip_edges())
+	
+	print("Attempting to create server: ", server_name, " on port: ", port)
+	
+	if NetworkManager.create_server(server_name, port):
+		create_button.disabled = true
+		create_button.text = "Creating..."
+		print("Server creation initiated...")
+	else:
+		print("ERROR: Failed to create server")
 
 func _on_create_back_pressed():
 	print("Create back button clicked!")
@@ -174,3 +207,42 @@ func _on_create_back_pressed():
 		create_server.visible = false
 	if main_panel:
 		main_panel.visible = true
+
+func _on_server_created(port: int):
+	print("Server created successfully on port ", port)
+	# Switch to game lobby
+	get_tree().change_scene_to_file("res://Lobby.tscn")
+
+func _on_server_disconnected():
+	print("Server disconnected!")
+	# Return to main menu
+	if main_panel:
+		main_panel.visible = true
+	if server_browser:
+		server_browser.visible = false
+	if create_server:
+		create_server.visible = false
+	
+	# Reset button states
+	if browser_join_button:
+		browser_join_button.disabled = false
+		browser_join_button.text = "Join"
+	if create_button:
+		create_button.disabled = false
+		create_button.text = "Create"
+
+func _on_server_list_updated(servers: Array):
+	print("Server list updated with ", servers.size(), " servers")
+	if not server_list:
+		return
+		
+	server_list.clear()
+	
+	for server in servers:
+		var text = "%s (%d/%d) - %s" % [
+			server["name"],
+			server["current_players"],
+			server["max_players"],
+			server["host"]
+		]
+		server_list.add_item(text)
